@@ -2,7 +2,7 @@ name: Daily English Sentence
 
 on:
   schedule:
-    - cron: "*/5 * * * *"   # هر 5 دقیقه یکبار
+   - cron: "0 0,12 * * *"  # هر 5 دقیقه یکبار
   workflow_dispatch:          # اجرای دستی با دکمه
 
 jobs:
