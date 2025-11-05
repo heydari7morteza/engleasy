@@ -102,7 +102,7 @@ sentences = [
     "Participating in competitions or challenges motivates personal growth, resilience, and determination to succeed.",
     "Learning to summarize, paraphrase, and explain complex ideas clearly is crucial for effective communication skills.",
     "Developing a routine for self-improvement, such as reading, writing, or learning new skills, leads to continuous growth.",
-    "Being curious and asking thoughtful questions encourages learning, creativity, and a deeper understanding of the world."
+    "Being curious and asking thoughtful questions encourages learning, creativity, and a deeper understanding of the world"
 ]
 
 
