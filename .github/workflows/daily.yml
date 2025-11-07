@@ -2,7 +2,7 @@ name: Daily English Sentence
 
 on:
   schedule:
-    - cron: "0 */6 * * *" # هر 12 ساعت
+    - cron: "30 16 * * *"  # هر روز ساعت 20:00 ایران
   workflow_dispatch:          # اجرای دستی با دکمه
 
 jobs:
