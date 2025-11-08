@@ -1,9 +1,8 @@
 import os
 import random
-import requests
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import Updater, CallbackQueryHandler, CallbackContext
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Bot
 
+# دریافت توکن و چت آی‌دی از محیط
 TOKEN = os.environ["TELEGRAM_TOKEN"]
 CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
 
@@ -71,54 +70,16 @@ questions = [
     }
 ]
 
-def send_question(update: Update, context: CallbackContext):
-    question_data = random.choice(questions)
-    text = question_data["question"]
+# انتخاب تصادفی یک سوال
+question_data = random.choice(questions)
 
-    keyboard = [
-        [InlineKeyboardButton(opt, callback_data=str(i))] for i, opt in enumerate(question_data["options"])
-    ]
-    # دکمه توضیح پاسخ غیرفعال است (callback_data="show_explanation")
-    keyboard.append([InlineKeyboardButton("Show Explanation", callback_data="show_explanation", callback_game=False)])
-    reply_markup = InlineKeyboardMarkup(keyboard)
+text = question_data["question"]
 
-    # پیام ارسال
-    context.bot.send_message(chat_id=CHAT_ID, text=text, reply_markup=reply_markup)
+# ساخت دکمه‌ها
+keyboard = [[InlineKeyboardButton(opt, callback_data=str(i))] for i, opt in enumerate(question_data["options"])]
+keyboard.append([InlineKeyboardButton("Show Explanation", callback_data="show_explanation")])
+reply_markup = InlineKeyboardMarkup(keyboard)
 
-    # ذخیره سوال فعلی در context برای بررسی پاسخ
-    context.user_data["current_question"] = question_data
-
-def button_handler(update: Update, context: CallbackContext):
-    query = update.callback_query
-    query.answer()
-
-    current_question = context.user_data.get("current_question")
-    if not current_question:
-        return
-
-    if query.data.isdigit():  # بررسی پاسخ
-        selected = int(query.data)
-        correct = current_question["answer"]
-        if selected == correct:
-            text = f"✅ Correct!"
-        else:
-            text = f"❌ Incorrect."
-        query.edit_message_text(
-            text=f"{current_question['question']}\n\nYou selected: {current_question['options'][selected]}\n{text}",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("Show Explanation", callback_data="show_explanation")]
-            ])
-        )
-    elif query.data == "show_explanation":
-        text = current_question["explanation"]
-        query.edit_message_text(text=f"{current_question['question']}\n\nExplanation: {text}")
-
-def main():
-    updater = Updater(TOKEN)
-    updater.dispatcher.add_handler(CallbackQueryHandler(button_handler))
-    updater.job_queue.run_once(send_question, 0)
-    updater.start_polling()
-    updater.idle()
-
-if __name__ == "__main__":
-    main()
+# ارسال پیام با دکمه‌ها
+bot = Bot(TOKEN)
+bot.send_message(chat_id=CHAT_ID, text=text, reply_markup=reply_markup)
